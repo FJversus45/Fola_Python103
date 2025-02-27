@@ -76,8 +76,13 @@ class ExpenseTracker():
         self.MyTree.heading("Amount", text = "Amount")
         self.MyTree.column("Amount", width = 100, anchor= "e")
         self.MyTree.pack()
+
+        self.totalBtn = Button(self.window, bg = "Light Pink", text = "Total Expense", width = 40, command= self.addAmount)
+        self.totalBtn.pack()
+        self.totalEntry = Listbox(self.window, width = 40,height = 3, bg = "azure")
+        self.totalEntry.pack()
     
-    
+        
 
     def addExpense(self):
         date = self.date.get().strip()
@@ -111,13 +116,14 @@ class ExpenseTracker():
 
     def addAmount(self):
         self.cursor.execute("""
-            SELECT amount FROM expenses ORDER BY id DESC
+            SELECT SUM(amount)FROM expenses
             """)
-        total = self.cursor.fetchall()
-        amount = 0
-        for num in total:
-            print(num[0])
-
+        total = self.cursor.fetchone()[0]
+        self.totalEntry.insert(END, f"{total}")
+        
+        
+        
+       
  
     def populateExpenses(self):
         for item in self.MyTree.get_children():
